@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"speechs/api"
 	"speechs/databases"
 	"speechs/settings"
 )
@@ -17,5 +18,12 @@ func main() {
 	}
 	defer db.Close()
 
+	_, err = databases.QueryFile(db, "scripts/schema.sql")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	api.BindControllers(db)
 	http.ListenAndServe(setting.AppPort(), nil)
 }
